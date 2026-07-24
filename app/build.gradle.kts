@@ -13,9 +13,11 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.plugin.parcelize)
     alias(libs.plugins.org.jetbrains.kotlin.plugin.serialization)
     alias(libs.plugins.com.google.devtools.ksp)
-    alias(libs.plugins.com.google.gms.google.services)
-    alias(libs.plugins.com.google.firebase.crashlytics)
-    alias(libs.plugins.com.google.firebase.firebase.pref)
+    if (System.getenv("HA1_VERSION_SOURCE") != "ci") {
+        alias(libs.plugins.com.google.gms.google.services)
+        alias(libs.plugins.com.google.firebase.crashlytics)
+        alias(libs.plugins.com.google.firebase.firebase.pref)
+    }
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.navigation.safeargs)
     id("com.mikepenz.aboutlibraries.plugin") version "12.2.4"
@@ -209,13 +211,16 @@ dependencies {
 
     // firebase
 
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
-    implementation(libs.firebase.crashlytics)
-    implementation(libs.firebase.perf)
-    implementation(libs.firebase.config)
+    val isCi = System.getenv("HA1_VERSION_SOURCE") == "ci"
+    if (!isCi) {
+        implementation(platform(libs.firebase.bom))
+        implementation(libs.firebase.analytics)
+        implementation(libs.firebase.crashlytics)
+        implementation(libs.firebase.perf)
+        implementation(libs.firebase.config)
+        implementation(libs.firebase.database)
+    }
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation(libs.firebase.database)
     ksp(libs.room.compiler)
 
     coreLibraryDesugaring(libs.desugar.jdk.libs)

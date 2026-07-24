@@ -6,13 +6,6 @@ import android.util.Log
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.android.material.color.DynamicColors
-import com.google.firebase.Firebase
-import com.google.firebase.analytics.analytics
-import com.google.firebase.crashlytics.crashlytics
-import com.google.firebase.crashlytics.setCustomKeys
-import com.google.firebase.database.database
-import com.google.firebase.remoteconfig.remoteConfig
-import com.google.firebase.remoteconfig.remoteConfigSettings
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
@@ -58,7 +51,9 @@ class HanimeApplication : YenalyApplication() {
         }
         ProxySelector.setDefault(HProxySelector())
         HProxySelector.rebuildNetwork()
-        initFirebase()
+        if (!BuildConfig.DEBUG && System.getenv("HA1_VERSION_SOURCE") != "ci") {
+            initFirebase()
+        }
         initNotificationChannel()
         MPVLib.create(applicationContext)
         MPVLib.init()
