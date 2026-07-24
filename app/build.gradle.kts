@@ -53,11 +53,14 @@ android {
         buildConfigField("int", "SEARCH_YEAR_RANGE_END", "${Config.thisYear}")
     }
     signingConfigs {
-        create("release") {
-            storeFile = file(System.getenv("HOME") + "/.android/keystore.jks")
-            storePassword = System.getenv("KEYSTORE_PASSWORD")
-            keyAlias = System.getenv("KEY_ALIAS")
-            keyPassword = System.getenv("KEYSTORE_PASSWORD")
+        val keystoreFile = file(System.getenv("HOME") + "/.android/keystore.jks")
+        if (keystoreFile.exists()) {
+            create("release") {
+                storeFile = keystoreFile
+                storePassword = System.getenv("KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("KEY_ALIAS")
+                keyPassword = System.getenv("KEYSTORE_PASSWORD")
+            }
         }
     }
 
@@ -77,7 +80,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.findByName("release")
             manifestPlaceholders.put("appIcon", "@mipmap/ic_launcher_new")
 
             applicationVariants.all variant@{
